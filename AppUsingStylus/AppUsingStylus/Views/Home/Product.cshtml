@@ -1,0 +1,448 @@
+﻿
+@{
+    ViewBag.Title = "Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<body ng-app="app" ng-controller="myController">
+   <h2>Product</h2>
+   <div>
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myAdmin">{{messageAdmin}}</button>
+      <!-- Modal -->
+      <div class="modal fade" id="myAdmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Inicio de Sesion</h4>
+               </div>
+               <div class="modal-body">
+                  <form class="form-horizontal" ng-hide="isAdminValidate">
+                     <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">User</label>
+                        <div class="col-sm-10">
+                           <input type="text" class="form-control" id="inputEmail3" placeholder="Ingrese el Nombre de Usuario" ng-model="name">
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+                        <div class="col-sm-10">
+                           <input type="password" class="form-control" id="inputPassword3" placeholder="Password" ng-model="pass">
+                        </div>
+                     </div>
+                     <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                           <div class="checkbox">
+                              <label>
+                              <input type="checkbox"> Remember me
+                              </label>
+                           </div>
+                        </div>
+                     </div>
+                  </form>
+                  <div ng-class="{'alert-danger': (!isAdmin), 'alert-success':(isAdminValidate)}" ng-show="intento">
+                     <br /><br />
+                     <p class="text-center">{{datosSesion}}</p>
+                     <br /><br />
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="verify(name, pass)" ng-hide="isAdminValidate" data-toggle="modal" data-target="#verfyPass">Enviar</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" ng-click="cerrarSesion()" ng-show="isAdminValidate">Cerrar Sesion</button>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="modal fade" id="verfyPass" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+               </div>
+               <div class="modal-body">
+                  <div ng-show="isAdmin">
+                     <div class="btn-group">
+                        <div class="jumbotron">Hola Usuario Por Favor Ingrese su Combianacion Secreta para Verificar su Identidad</div>
+                        <h2>Combinación Secreta</h2>
+                        <button class="btn btn-warning" ng-repeat="o in contrasenia track by $index" id="image_control"><img ng-src="{{o}}" width="50" height="50"></button>
+                     </div>
+                     <br><br>
+                     <h2>{{text}}</h2>
+                     <button class="btn btn-success" ng-repeat="t in nameArray" id="image_control" ng-click="enviarArray(t.ruta)"><img ng-src="{{t.ruta}}" width="50" height="50"></button><br><br>
+                     <nav aria-label="...">
+                        <ul class="pager">
+                           <li class="next"><a href="#" ng-click="borrarCombinacion()">Borrar Combinacion<span aria-hidden="true">&rarr;</span></a></li>
+                        </ul>
+                     </nav>
+                  </div>
+                  <div class="alert-danger" ng-show="!isAdmin">
+                     {{datosSesion}}<br />Por Favor Intente Nuevamente
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="validarCombinacion()">Enviar</button>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   </div>
+   <br /><br />
+   <div class="container">
+      <form class="form-horizontal">
+         <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">Buscar</label>
+            <div class="col-sm-10">
+               <input type="text" class="form-control" id="inputEmail3" placeholder="Ingrese aqui el elemento a Buscar" ng-model="busqueda">
+            </div>
+         </div>
+      </form>
+      <br /><br />
+      <div class="row menu">
+         <div class="col-sm-3 col-md-3">
+            <div class="panel-group" id="accordion">
+               <div class="panel panel-default">
+                  <div class="panel-heading">
+                     <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                        <span class="glyphicon glyphicon-bookmark">
+                        </span>Categoria 1
+                        </a>
+                     </h4>
+                  </div>
+                  <div id="collapseOne" class="panel-collapse collapse in">
+                     <div class="panel-body">
+                        <table class="table">
+                           <tr>
+                              <td>
+                                 <span class="glyphicon glyphicon-pencil text-primary"></span><a href="#" ng-click="mostrarCategoria1()" class="btn btn-default" role="button" data-toggle="modal" data-target="#cat">Edicion Especial</a>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+               <div class="panel panel-default">
+                  <div class="panel-heading">
+                     <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                        <span class="glyphicon glyphicon-th">
+                        </span>Categoria 2
+                        </a>
+                     </h4>
+                  </div>
+                  <div id="collapseTwo" class="panel-collapse collapse">
+                     <div class="panel-body">
+                        <table class="table">
+                           <tr>
+                              <td>
+                                 <span class="glyphicon glyphicon-pencil text-primary"></span><a href="#" ng-click="mostrarCategoria2()" class="btn btn-default" role="button" data-toggle="modal" data-target="#cat">Edicion Normal</a>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+               <div class="panel panel-default">
+                  <div class="panel-heading">
+                     <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                        <span class="glyphicon glyphicon-user">
+                        </span>Categoria 3
+                        </a>
+                     </h4>
+                  </div>
+                  <div id="collapseThree" class="panel-collapse collapse">
+                     <div class="panel-body">
+                        <table class="table">
+                           <tr>
+                              <td>
+                                 <a href="#" ng-click="mostrarCategoria3()" class="btn btn-default" role="button" data-toggle="modal" data-target="#cat">Estatuas</a>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+               <div class="panel panel-default">
+                  <div class="panel-heading">
+                     <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
+                        <span class="glyphicon glyphicon-file">
+                        </span>Categoria 4
+                        </a>
+                     </h4>
+                  </div>
+                  <div id="collapseFour" class="panel-collapse collapse">
+                     <div class="panel-body">
+                        <table class="table">
+                           <tr>
+                              <td>
+                                 <span class="glyphicon glyphicon-usd"></span><a href="#" ng-click="mostrarCategoria4()" class="btn btn-default" role="button" data-toggle="modal" data-target="#cat">Peluches</a>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+               <div class="panel panel-default">
+                  <div class="panel-heading">
+                     <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapsefive">
+                        <span class="glyphicon glyphicon-shopping-cart">
+                        </span>Shop
+                        </a>
+                     </h4>
+                  </div>
+                  <div id="collapsefive" class="panel-collapse collapse">
+                     <div class="panel-body">
+                        <table class="table">
+                           <tr>
+                              <td>
+                                 <span class="glyphicon glyphicon-shopping-cart"></span><a href="#" data-toggle="modal" data-target="#shop" ng-click="pay()">Ver Carrito de Compras</a>
+                                 <!--Modal Here-->
+                                 <div class="modal fade" id="shop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                                    <div class="modal-dialog" role="document">
+                                       <div class="modal-content">
+                                          <div class="modal-header">
+                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                             <h4 class="modal-title" id="myModalLabel">Carrito de Compras</h4>
+                                          </div>
+                                          <div class="modal-body">
+                                             <table class="table table-striped">
+                                                <tr ng-repeat="adC in compra track by $index">
+                                                   <td>
+                                                      <a href="{{adC.ruta}}" target="_blank" class="thumbnail">
+                                                      <img src="{{adC.ruta}}" alt="..." width="300" height="300">
+                                                      </a>
+                                                   </td>
+                                                   <td>
+                                                      <b>Nombre :</b>{{adC.name}}<br />
+                                                      <b>Description: </b> {{adC.description}} <br />
+                                                      <b>Precio :</b>{{adC.price}} €<br /><br />
+                                                      <button class="btn btn-primary" ng-click="deleteItem(adC.id, adC.price)">Delete</button>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                   <td>
+                                                      <h4>Total : </h4>
+                                                   </td>
+                                                   <td>
+                                                      <b>{{precioCompra}} €</b>
+                                                   </td>
+                                                </tr>
+                                             </table>
+                                             <button class="btn btn-primary" ng-click="limpiar()">Vaciar Carrito de Compras</button>
+                                          </div>
+                                          <div class="modal-footer">
+                                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                             <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#pay" ng-click="verificar()">Pay</button>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!--Modal Here-->
+            <div class="modal fade" id="cat" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+               <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">{{idCat}}</h4>
+                     </div>
+                     <div class="modal-body">
+                        <table class="table table-striped">
+                           <tr ng-repeat="k in idCategoria">
+                              <td>
+                                 <a href="{{k.ruta}}" target="_blank" class="thumbnail">
+                                 <img src="{{k.ruta}}" alt="..." width="300" height="300">
+                                 </a>
+                              </td>
+                              <td>
+                                 <b>Nombre :</b>{{k.name}}<br />
+                                 <b>Description: </b> {{k.description}} <br />
+                                 <b>Precio :</b>{{k.price}} €<br /><br />
+                                 <button class="btn btn-primary" type="button" ng-click="addCart(k)">Buy</button>
+                              </td>
+                           </tr>
+                        </table>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <h2>Carrito de Compras</h2>
+            <table class="table">
+               <tr>
+                  <th>Nombre</th>
+                  <th>Precio</th>
+                  <th>Accion</th>
+               </tr>
+               <tr ng-repeat="adCa in compra track by $index" ng-animate="">
+                  <td>{{adCa.name}}</td>
+                  <td>{{adCa.price}} €
+                  <td>
+                  <td><button class="btn btn-primary" ng-click="deleteItem(adCa.id, adCa.price)"><i class="glyphicon glyphicon-trash"></i></button>
+                  <td>
+               </tr>
+               <tr>
+                  <th>Valor de la Compra</th>
+                  <th>{{precioCompra}} €</th>
+                  <th><button class="btn btn-warning" data-toggle="modal" data-target="#pay" ng-click="verificar()"><i class="glyphicon glyphicon-shopping-cart"></i></button></th>
+               </tr>
+            </table>
+            <!--Modals Small-->
+            <div class="modal fade" id="pay" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+               <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel">Recibo</h4>
+                     </div>
+                     <div class="modal-body">
+                        <h1 class="h1">{{message}}</h1>
+                        <br /><br />
+                        <table class="table">
+                           <tr>
+                              <td>
+                                 <b>Nombre del Producto</b>
+                              </td>
+                              <td>
+                                 <b>
+                                 <b>Precio</b>
+                                 </b>
+                              </td>
+                           </tr>
+                           <tr ng-repeat="p in compra">
+                              <td>{{p.name}}</td>
+                              <td>{{p.price}} €</td>
+                           </tr>
+                           <tr>
+                              <td><b>VALOR DE SU COMPRA</b></td>
+                              <td><b>{{precioCompra}} €</b></td>
+                           </tr>
+                        </table>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="limpiar()">Aceptar</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-sm-9 col-md-9">
+            <div class="well">
+               <!-- Button trigger modal -->
+               <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target=".bs-example-modal-lg" ng-show="isAdminValidate">
+               Agregar Producto
+               </button>
+               <!-- Modal -->
+               <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+                  <div class="modal-dialog modal-lg" role="document">
+                     <div class="modal-content">
+                        <div class="modal-header">
+                           <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                           <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                        </div>
+                        <div class="modal-body">
+                           <div class="input-group">
+                              <span class="input-group-addon" id="basic-addon1">Nombre del Producto</span>
+                              <input type="text" class="form-control" placeholder="Name" ng-model="addName" aria-describedby="basic-addon1">
+                           </div>
+                           <br />
+                           <div class="input-group">
+                              <span class="input-group-addon" id="basic-addon1">Descripcion del Producto</span>
+                              <input type="text" class="form-control" ng-model="addDesc" placeholder="Description" aria-describedby="basic-addon1">
+                           </div>
+                           <br />
+                           <div class="input-group">
+                              <span class="input-group-addon" id="basic-addon1">Categoria del Producto</span>
+                              <input type="number" ng-model="addCategory" class="form-control" placeholder="Categoria" aria-describedby="basic-addon1">
+                           </div>
+                           <br />
+                           <div class="input-group">
+                              <span class="input-group-addon" id="basic-addon1">Precio del Producto €</span>
+                              <input type="number" class="form-control" ng-model="addPrice" placeholder="Price cash(€)" aria-describedby="basic-addon1">
+                           </div>
+                           <br />
+                           <div class="input-group">
+                              <span class="input-group-addon" id="basic-addon1">Imagen del Producto</span>
+                              <input type="file" class="form-control" fileread="vm.uploadme" placeholder="Imagen" aria-describedby="basic-addon1">
+                           </div>
+                           <br />
+                        </div>
+                        <div class="modal-footer">
+                           <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                           <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="addProduct(vm.uploadme.name, addName, addDesc, addPrice, addCategory)">Agregar Producto</button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <h1 class="h1">
+                  Lista de Productos
+               </h1>
+               <br />
+               <div class="row menu">
+                  <div class="item-container">
+                     <div class="item" ng-repeat="x in images1 | filter : busqueda">
+                        <div class="col-md-6">
+                           <div class="thumbnail misImagenes" id="img">
+                              <img ng-src="{{x.ruta}}" alt="..." width="300" height="300">
+                              <div class="caption">
+                                 <h3 class="blockquote">{{x.name}}</h3>
+                                 <p class="pre">{{x.description}}</p>
+                                 <p class="pre">Precio : {{x.price}} €</p>
+                                 <p class="pre">Categoria: {{x.categoria}}</p>
+                                 <p>
+                                    <a ng-click="addCart(x)" class="btn btn-primary" role="button">Buy</a>
+                                    <a href="#" ng-click="selectItem(x)" class="btn btn-default" role="button" data-toggle="modal" data-target="#myModal">Info</a>
+                                 </p>
+                              </div>
+                           </div>
+                           <br />
+                        </div>
+                     </div>
+                     <!--Modal Here-->
+                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                           <div class="modal-content">
+                              <div class="modal-header">
+                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                 <h4 class="modal-title" id="myModalLabel">{{selected.name}}</h4>
+                              </div>
+                              <div class="modal-body">
+                                 <a href="{{selected.ruta}}" target="_blank" class="thumbnail">
+                                 <img src="{{selected.ruta}}" alt="...">
+                                 </a>
+                                 <div class="caption">
+                                    <p>{{selected.description}}</p>
+                                    <p><b>Precio:</b> {{selected.price}} €</p>
+                                    <h3>Categoria :{{selected.categoria}}</h3>
+                                 </div>
+                              </div>
+                              <div class="modal-footer">
+                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <!--Modal Finish-->
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   </div>
+   </div>
+</body>

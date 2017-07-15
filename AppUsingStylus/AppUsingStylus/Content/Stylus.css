@@ -1,0 +1,22 @@
+.special {
+  color: #00f;
+  font-size: 23px;
+}
+.site {
+  background: #30d432;
+  width: 100px;
+  padding: 10px;
+}
+.site:hover {
+  background: #008000;
+  cursor: pointer;
+}
+body {
+  background: rgba(5,197,230,0.64);
+}
+.container .jumbotron h1 {
+  color: #008000;
+}
+.addProd {
+  width: 1200px !important;
+}
